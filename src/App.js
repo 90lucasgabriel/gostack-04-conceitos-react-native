@@ -34,15 +34,15 @@ export default function App() {
 
   async function handleLikeRepository(id) {
     const response = await api.post(`repositories/${id}/like`);
+    const likedRepository = response.data;
+    const repositoriesUpdated = repositories.map((repository) => {
+      if (repository.id === id) {
+        return likedRepository;
+      }
+      return repository;
+    });
 
-    const repositoryIndex = repositories.findIndex(
-      (repository) => repository.id === id
-    );
-
-    const repository = repositories[repositoryIndex];
-    repository.likes = response.data.likes;
-
-    setRepositories([...repositories]);
+    setRepositories(repositoriesUpdated);
   }
 
   return (
@@ -86,7 +86,8 @@ export default function App() {
         <TouchableOpacity
           activeOpacity={0.8}
           style={styles.buttonAdd}
-          onPress={handleAddRepository}>
+          onPress={handleAddRepository}
+        >
           <Text style={styles.buttonAddText}>Adicionar Repositório</Text>
         </TouchableOpacity>
       </SafeAreaView>
